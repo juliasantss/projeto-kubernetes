@@ -1,0 +1,52 @@
+# ConfigMap integrado para a URL da API
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: app
+data:
+  # URL do backend Service
+  #  Ingress, a URL deve ser relativa (http://<dominio>/api)
+  VITE_API_URL: "/api"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: app
+  labels:
+    app: frontend
+spec:
+  replicas: 2 
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: react-app
+          image: juliasantss/kube-students-frontend:latest imagem do DockerHub
+          ports:
+            - containerPort: 80 # Porta padrão do nginx/container do front
+          envFrom:
+            # Carrega a variável VITE_API_URL do ConfigMap
+            - configMapRef:
+                name: frontend-config
+---
+# Service para acesso interno (Ingress) ao Frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: app
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80 # Porta do Service
+      targetPort: 80 # Porta do Container (nginx)
+  type: ClusterIP

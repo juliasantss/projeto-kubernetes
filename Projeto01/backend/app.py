@@ -22,6 +22,16 @@ db.init_app(app)
 def cria_tabelas():
     db.create_all()
 
+# --- NOVAS ROTAS ADICIONADAS PARA STATUS E TESTE ---
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({"status": "Backend running"}), 200
+
+@app.route('/api', methods=['GET'])
+def api_root():
+    return jsonify({"status": "API is online", "endpoints": ["/api/mensagens"]}), 200
+# ---------------------------------------------------
+
 @app.route('/api/mensagens', methods=['GET'])
 def listar_mensagens():
     mensagens = Mensagem.query.all()

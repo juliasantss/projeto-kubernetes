@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: app 
+  labels:
+    app: backend
+spec:
+  replicas: 2 # Alta disponibilidade
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: flask-app
+          image: juliasantss/kube-students-backend:latest #imagem do DockerHub
+          ports:
+            - containerPort: 5000
+          envFrom:
+            # Carrega variáveis do ConfigMap 
+            - configMapRef:
+                name: backend-config
+            # Carrega credenciais do Secret
+            - secretRef:
+                name: backend-db-secret
+          env:
+            # Configura a porta de escuta do Flask
+            - name: PORT
+              value: "5000"
+          
+          # Probes de Liveness e Readiness CORRIGIDAS usando tcpSocket
+          livenessProbe:
+            tcpSocket:
+              port: 5000 # Verifica se a porta 5000 está escutando
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 5000 # Verifica se a porta 5000 está escutando antes de liberar o tráfego
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+---
+# Service para acesso interno (Frontend e Ingress) ao Backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: app # Namespace da aplicação
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 5000 # Porta do Service
+      targetPort: 5000 # Porta do Container
+  type: ClusterIP
