@@ -4,6 +4,8 @@ Este projeto implementa um sistema de mensagens simples (Frontend em React/Vite,
 Nome: Júlia Beatriz da Silva Santos
 Matrícula: 20231380011
 
+Nome: Luiz Philipe Lima de Andrade
+Matrícula: 20231380035
 
 🎯 Objetivo do Projeto
 O objetivo principal é demonstrar a orquestração completa de uma aplicação web de três camadas (Frontend, Backend, Database) utilizando conceitos avançados do Kubernetes, incluindo:
@@ -102,6 +104,7 @@ Observação: Se o IP 172.19.0.2 não funcionar, encontre o IP correto usando:
 docker ps --filter "name=projetok8s"
 # 2. Obter o IP
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' projetok8s-control-plane
+
 
 
 
