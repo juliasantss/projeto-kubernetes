@@ -31,7 +31,11 @@ Subir as imagens no Docker Hub (juliasantss/kube-students-backend:latest)
 siga os passos abaixo no terminal da sua Máquina Virtual (Debian) para aplicar o projeto.
 -----------------------------------------------------------------------------------------------------
 
-1. Preparação do Ambiente
+0. Criar o cluster
+# O cluster foi criado utilizando o seguinte comando via CLI:
+kind create cluster --name projetok8s
+
+2. Preparação do Ambiente
 Crie os namespaces e o Persistent Volume Claim (PVC) para o PostgreSQL.
 # 1.1 Criar o namespace da aplicação e do banco
 kubectl apply -f namespace.yaml
@@ -106,9 +110,14 @@ docker ps --filter "name=projetok8s"
 docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' projetok8s-control-plane
 
 
+Observações:
+Novas Rotas no app.py
+Foram adicionadas rotas estratégicas ao Backend para garantir a estabilidade e facilitar o diagnóstico do deploy:
 
+Rota de Raiz (/):
+Função: Retorna um status de "Backend running".
+Motivo: Serve como um Health Check (Teste de Saúde) simplificado. Ela permite confirmar instantaneamente se o tráfego que entra pelo Ingress está realmente conseguindo atravessar todas as camadas até chegar ao servidor Flask.
 
-
-
-
-
+Rota Base da API (/api):
+Função: Retorna o status da API e lista os endpoints ativos, como /api/mensagens.
+Motivo: Foi adicionada para solucionar erros de 404 Not Found encontrados durante os testes iniciais. Ela valida se o roteamento do Ingress configurado para o prefixo /api está funcionando corretamente antes de testar a persistência de dados no banco.
