@@ -31,8 +31,8 @@ Subir as imagens no Docker Hub (juliasantss/kube-students-backend:latest)
 siga os passos abaixo no terminal da sua Máquina Virtual (Debian) para aplicar o projeto.
 -----------------------------------------------------------------------------------------------------
 
-0. Criar o cluster
-# O cluster foi criado utilizando o seguinte comando via CLI:
+# 0. Criar o cluster
+O cluster foi criado utilizando o seguinte comando via CLI:
 kind create cluster --name projetok8s
 
 2. Preparação do Ambiente
@@ -121,3 +121,4 @@ Motivo: Serve como um Health Check (Teste de Saúde) simplificado. Ela permite c
 Rota Base da API (/api):
 Função: Retorna o status da API e lista os endpoints ativos, como /api/mensagens.
 Motivo: Foi adicionada para solucionar erros de 404 Not Found encontrados durante os testes iniciais. Ela valida se o roteamento do Ingress configurado para o prefixo /api está funcionando corretamente antes de testar a persistência de dados no banco.
+
